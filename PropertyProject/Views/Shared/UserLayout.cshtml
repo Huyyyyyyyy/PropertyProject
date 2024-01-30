@@ -1,0 +1,1766 @@
+﻿@using CaptchaMvc;
+@using CaptchaMvc.HtmlHelpers;
+
+@{
+    //call otp was sent
+    string otp = Session["otp"] as string;
+
+    //call temporary email
+    PropertyProject.Models.Account tempAccount = new PropertyProject.Models.Account();
+    //mask email
+
+    if (Session["tempAccount"] != null)
+    {
+        PropertyProject.Models.mapContactEmail.mapContactEmail map = new PropertyProject.Models.mapContactEmail.mapContactEmail();
+        tempAccount = Session["tempAccount"] as PropertyProject.Models.Account;
+
+    }
+
+    var user = (PropertyProject.Models.Account)System.Web.HttpContext.Current.Session["user"];
+
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nhà Nhanh</title>
+
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="~/Content/plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css">
+    <link rel="stylesheet" href="~/icons/themify-icons/themify-icons.css">
+    <link rel="stylesheet" href="~/CSS/stylelayout.css">
+
+    <!-- Thẻ link để đặt favicon -->
+    <link rel="icon" href="~/Image/logo3.png" type="image/x-icon">
+    <style>
+
+        /*css hide side*/
+        #hide-side {
+            width: 100%;
+            height: 170%;
+            background: #222;
+            opacity: 0.6;
+            position: fixed;
+            z-index: 9999;
+            display: none;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /*finish css hide side*/
+
+
+        /*custom radio*/
+        .container {
+            --s: 30px; /* control the size */
+            --g: 10px; /* the gap */
+            --c: white; /* the active color */
+
+            display: grid;
+            grid-auto-rows: 1fr;
+            gap: var(--g);
+            position: relative;
+            width: 45%;
+        }
+
+            .container:before {
+                content: "";
+                position: absolute;
+                height: calc(var(--s)/2);
+                left: calc(var(--s)/4 + var(--_x,0px));
+                top: calc(var(--s)/4);
+                background: var(--c);
+                border-radius: 50%;
+                aspect-ratio: 1;
+                transition: .4s,left cubic-bezier(.1,-2000,.7,-2000) .4s;
+            }
+
+        label {
+            display: inline-flex;
+            line-height: var(--s);
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            width: 200px;
+            margin-right: 40px;
+        }
+
+        input {
+            height: var(--s);
+            aspect-ratio: 1;
+            border: calc(var(--s)/8) solid var(--_c,white);
+            border-radius: 50%;
+            outline-offset: calc(var(--s)/10);
+            padding: calc(var(--s)/8);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            font-size: inherit;
+            margin: 0;
+            transition: .3s;
+        }
+
+            input:checked {
+                --_c: var(--c);
+            }
+
+        .container:not(:has(input:checked)):before {
+            --_i: -1;
+            opacity: 0;
+        }
+
+        .container:has(input:checked):before {
+            opacity: 1;
+            transform: translateY(calc(var(--_i)*(var(--s) + var(--g))))
+        }
+
+        .container:has(label:nth-child(1) input:checked):before {
+            --_x: 12px;
+            background-color: #EEAB5A;
+            top: 20%
+        }
+
+        .container:has(label:nth-child(2) input:checked):before {
+            --_i: 1;
+            --_x: .04px;
+            background-color: #EEAB5A
+        }
+
+        .container:has(label:nth-child(3) input:checked):before {
+            --_i: 2;
+            --_x: .06px;
+            background-color: #EEAB5A
+        }
+
+        .container:has(label:nth-child(4) input:checked):before {
+            --_i: 3;
+            --_x: .08px;
+            background-color: white
+        }
+
+        .container:has(label:nth-child(5) input:checked):before {
+            --_i: 4;
+            --_x: .1px;
+            background-color: white
+        }
+        /* and so on ..*/
+
+        input:disabled {
+            background: linear-gradient(#939393 0 0) 50%/100% 20% no-repeat content-box;
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        input:checked {
+            --_c: var(--c);
+            background: var(--c) content-box;
+        }
+
+        /*fisnish custom radio*/
+
+
+
+
+
+        /*css popup login/register side*/
+        .login-popup {
+            width: 55%;
+            height: fit-content;
+            background: #EEAB5A;
+            position: fixed;
+            z-index: 99999;
+            left: 22%;
+            top: -100%;
+            transition: 0.4s;
+            border-radius: 60px;
+        }
+
+        .title-login {
+            width: 100%;
+            padding: 30px 20px;
+            text-align: center;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+
+        .input-login {
+            width: 100%;
+            height: fit-content;
+            margin-bottom: 20px;
+            text-align: center;
+            padding: 0 50px;
+            display: flex;
+            align-items: center;
+        }
+
+            .input-login input {
+                border: none;
+                width: 100%;
+                height: 55px;
+                border-radius: 25px;
+                outline: none;
+                caret-color: #e07a00;
+            }
+
+                .input-login input::placeholder {
+                    color: #EEAB5A;
+                    padding-left: 20px;
+                    font-weight: bold;
+                    font-size: 16px;
+                }
+
+                .input-login input:focus {
+                    outline: 4px solid #e07a00;
+                    transition: 0.3s;
+                    text-indent: 20px;
+                    color: #e07a00;
+                }
+
+        .focus {
+            text-indent: 20px;
+            color: #e07a00;
+        }
+
+        .login-button {
+            display: flex;
+        }
+
+
+            .login-button .remember-password {
+                width: 30%;
+                color: white;
+            }
+
+        .submit {
+            width: 55%;
+            margin-left: 8%;
+        }
+
+            .submit button {
+                width: 110%;
+                background-color: #F80A0A;
+                border: none;
+                outline: none;
+                height: 45px;
+                color: white;
+                font-weight: 600;
+                border-radius: 20px;
+            }
+
+                .submit button:hover {
+                    background-color: #e90000
+                }
+
+        .forgot-password {
+            width: 20%;
+        }
+
+            .forgot-password a {
+                text-decoration: none;
+                color: white;
+                font-weight: 600;
+                font-size: 16px;
+            }
+
+        .login-other {
+            width: 100%;
+            height: fit-content;
+            margin: 40px 30px;
+            display: flex;
+        }
+
+            .login-other .login-other-option {
+                width: 40%;
+                height: 70px;
+                background: white;
+                border-radius: 15px;
+                padding: 10px 20px;
+                margin-left: 30px;
+                cursor: pointer;
+                display: flex;
+            }
+
+
+
+                .login-other .login-other-option:hover {
+                    background-color: #ececec;
+                }
+
+                .login-other .login-other-option .img-other-option {
+                    width: 40%;
+                    height: 40px;
+                }
+
+                    .login-other .login-other-option .img-other-option img {
+                        width: 40%;
+                    }
+
+
+                .login-other .login-other-option .name-other-option {
+                    color: #EEAB5A;
+                    font-size: 18px;
+                    font-weight: bold;
+                    text-align: start;
+                    line-height: 50px;
+                    width: 60%;
+                }
+
+
+        .link-to-register {
+            width: 100%;
+            height: fit-content;
+            margin: 10px;
+            color: white;
+            font-weight: 500;
+            font-size: 16px;
+            text-align: center;
+        }
+
+            .link-to-register a {
+                text-decoration: none;
+                color: #F80A0A;
+                font-weight: bold;
+                cursor: pointer
+            }
+
+        .login-warn {
+            margin: 10px 30px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+
+
+        .group-loading-login{
+            width:49%;
+        }
+
+        .show-login-popup {
+            top: 5%;
+            transition: 0.4s;
+        }
+
+        .show-register-popup {
+            top: 1%;
+            transition: 0.4s;
+        }
+
+
+        /*disable button login when fail check email*/
+        #btn-submit-login:disabled {
+            background-color: #cccccc;
+            color: white;
+            font-weight: 600;
+        }
+
+
+
+
+        /*css confirm otp*/
+        .input-email-site {
+            width: 100%;
+            height: fit-content;
+        }
+
+
+        .group-otp {
+            display: flex;
+            width: 100%;
+            height: fit-content;
+            align-items: center;
+            margin: 20px 0;
+            padding: 0 40px;
+        }
+
+            .group-otp .input-otp-one {
+                width: 17%;
+            }
+
+                .group-otp .input-otp-one input {
+                    width: 90%;
+                    border-radius: 30px;
+                    height: 100px;
+                    text-align: center;
+                    color: #EEAB5A;
+                    font-size: 40px;
+                    font-weight: bold;
+                }
+
+                    .group-otp .input-otp-one input:focus {
+                        color: #EEAB5A;
+                        font-size: 40px;
+                        font-weight: bold;
+                        text-align: center;
+                        outline: 4px solid #e07a00;
+                    }
+
+
+        .title-info-receiver {
+            color: #EEAB5A;
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 20px;
+            padding: 10px 20px;
+            background-color: white;
+            text-align: center;
+            margin: 0 45px;
+            border-radius: 20px;
+        }
+
+
+        .disabled-input-otp {
+            background-color: #ececec;
+            outline: none;
+        }
+
+        /*finish css confirm otp*/
+
+
+
+        /*css confirm captcha*/
+        .input-captcha-site {
+            width: 100%;
+            height: fit-content;
+            padding: 10px 40px;
+            text-align:center;
+        }
+
+        #9cd884bcb6534a6a8da2d458759a461f{
+            display:block !important;
+        }
+
+        #CaptchaImage {
+            width: 35%;
+            border-radius: 10px;
+            border: 4px solid #e07a00;
+        }
+
+        #CaptchaInputText {
+            width: 100%;
+            height: 45px;
+            border-radius: 10px;
+            text-align: center;
+            text-indent:10px;
+            color:#EEAB5A;
+            font-size:16px;
+            font-weight:bold;
+            outline:none;
+        }
+
+        #CaptchaInputText:hover{
+            outline:4px solid #e07a00;
+        }
+
+         #CaptchaInputText::placeholder{
+             font-size:18px ;
+             color: #EEAB5A;
+             text-align:start;
+             margin-bottom:10px;
+         }
+
+
+
+         .input-password-site{
+             display:grid;
+             padding: 10px 30px;
+         }
+
+
+         .input-password-site .input-password-field{
+             width:100%;
+             height:fit-content;
+         }
+
+         .input-password-site .input-password-field input{
+             width:100%;
+             height:50px;
+             border-radius:10px;
+             margin-top:10px;
+             color:#EEAB5A;
+             font-size:18px;
+             font-weight:600;
+             text-indent:20px;
+             outline:none;
+
+         }
+
+
+            .input-password-site .input-password-field input:hover{
+                outline:4px solid #e07a00;
+            }
+
+            .input-password-site .input-password-field input::placeholder {
+                color: #EEAB5A;
+                font-size: 18px;
+                font-weight: 600;
+                text-indent: 20px;
+            }
+
+        /*finish confirm captcha*/
+
+        /*finish css popup login/register side*/
+
+
+
+        /*overview*/
+        html {
+            font-family: Roboto;
+            line-height: 20px;
+            font-size: 16px;
+            word-spacing: 0.5px;
+            overflow: auto;
+            overflow-x: hidden;
+            min-height: fit-content;
+            min-width: fit-content;
+        }
+
+        /*end overview*/
+
+
+        /*css header*/
+
+        .main-header {
+            width: 100%;
+            height: fit-content;
+            position: fixed;
+            padding: 20px;
+            margin: 0 !important;
+            display: flex;
+            box-shadow: 0px 0px 4px 0 rgba(0,0,0,0.1);
+            background-color: white;
+        }
+
+        /*css logo*/
+        .logo-side {
+            width: 20%;
+            height: fit-content;
+        }
+
+            .logo-side img {
+                width: 75%;
+            }
+        /*end css logo*/
+
+
+
+        /*css topic*/
+        .topic-side {
+            width: 50%;
+        }
+
+            .topic-side .nav-topic {
+                display: flex;
+                list-style-type: none;
+                margin: 0;
+            }
+
+                .topic-side .nav-topic .topic-item {
+                    font-size: 14px;
+                    padding: 10px;
+                    margin: 5px;
+                    font-weight: 500;
+                    transition: 0.3s;
+                }
+
+                    .topic-side .nav-topic .topic-item:hover {
+                        background-color: #ececec;
+                        border-radius: 5px;
+                        transition: 0.3s;
+                    }
+
+                    .topic-side .nav-topic .topic-item a {
+                        color: #222;
+                        text-decoration: none;
+                    }
+        /*end css topic*/
+
+
+
+        /*login side*/
+        .login-side {
+            width: 30%;
+            height: 100%;
+        }
+
+            .login-side .btn-login {
+                font-size: 14px;
+                line-height: 50px;
+                margin: 0 10px;
+                text-decoration: none;
+                color: #EEAB5A;
+                box-shadow: 1px 2px 1px 2px #EEAB5A;
+                padding: 6px 30px;
+                border-radius: 4px;
+                transition: 0.3s;
+                font-weight: 500;
+                cursor: pointer;
+                user-select: none;
+            }
+
+                .login-side .btn-login:hover {
+                    color: white;
+                    background-color: #EEAB5A;
+                    transition: 0.3s;
+                }
+
+            .login-side .btn-register {
+                font-size: 14px;
+                line-height: 50px;
+                margin: 0 10px;
+                text-decoration: none;
+                color: #EEAB5A;
+                box-shadow: 1px 2px 1px 2px #EEAB5A;
+                padding: 6px 40px;
+                border-radius: 4px;
+                transition: 0.3s;
+                font-weight: 500;
+                cursor: pointer;
+                user-select: none;
+            }
+
+                .login-side .btn-register:hover {
+                    color: white;
+                    background-color: #EEAB5A;
+                    transition: 0.3s;
+                }
+        /*end login side*/
+
+
+
+        /*css profile side*/
+        .profile-side{
+            display:flex;
+            width:35%;
+            margin-left:10px;
+        }
+        .profile-button .setting {
+            position: absolute;
+            background-color: #EEAB5A;
+            border-radius: 50px;
+            padding: 20px 20px 10px 20px;
+            width:20%;
+            height:fit-content;
+        }
+
+        .profile-button .setting ul{
+            list-style-type:none;
+            padding:0;
+        }
+
+        .profile-button .setting ul li{
+            padding: 10px;
+            margin-bottom:10px;
+            background-color:white;
+            border-radius:20px;
+        }
+
+        .profile-button .setting ul li:hover{
+            background-color:#ececec;
+        }
+
+        .profile-button .setting ul li a{
+            text-decoration:none;
+            color: #EEAB5A;
+            font-size:16px;
+            font-weight:600;
+            text-align:center;
+        }
+        /*finish css profile side*/
+
+
+
+        /*end css header*/
+
+
+
+
+
+
+        /*css main content*/
+        .main-content {
+            padding-top: 90px;
+        }
+        /*end css main content*/
+
+
+
+
+
+
+        /*css main footer*/
+        .main-footer {
+            width: 100%;
+            height: fit-content;
+            background-color: #EEAB5A;
+            margin: 0px !important;
+            font-size: 14px;
+            display: flex;
+        }
+
+            /*left side*/
+            .main-footer .left-side-footer {
+                width: 30%;
+                padding-left: 20px;
+            }
+
+                .main-footer .left-side-footer .list-item {
+                    list-style-type: none;
+                    padding: 0;
+                }
+
+                    .main-footer .left-side-footer .list-item li {
+                        color: white;
+                        font-weight: 500;
+                        padding-bottom: 5px;
+                    }
+
+                    .main-footer .left-side-footer .list-item img {
+                        width: 50%;
+                    }
+
+            /*end left side*/
+
+            /*right side*/
+            .main-footer .right-side-footer {
+                width: 70%;
+                padding-left: 30px;
+                display: flex;
+            }
+
+        .right-side-footer .about-topic {
+            margin: 0 40px;
+            width: 20%;
+        }
+
+            .right-side-footer .about-topic .title-about {
+                padding-bottom: 20px;
+                color: white;
+                font-weight: 600;
+                font-size: 16px;
+            }
+
+            .right-side-footer .about-topic .list-item-about {
+                list-style-type: none;
+                padding: 10px 0 0 0;
+            }
+
+                .right-side-footer .about-topic .list-item-about li a {
+                    margin: 5px 0;
+                    text-decoration: none;
+                    color: white;
+                    font-size: 14px;
+                    font-weight: 500
+                }
+
+        /*end right side*/
+
+
+
+        /*finish css main footer*/
+    </style>
+
+
+</head>
+
+<body>
+
+    @*hide side*@
+    <div id="hide-side"></div>
+    @*end hide side*@
+
+
+
+    @*popup login*@
+    <div class="login-popup" id="login-popup">
+        <div class="title-login">
+            <span>ĐĂNG NHẬP ĐỂ TIẾP TỤC</span>
+        </div>
+
+        @*form login input*@
+    <form id="login-form" action="~/Home/loginAccount" method="post">
+
+        <div class="alert alert-danger" id="failed-email" style="margin:10px 70px; height:40px; line-height:40px; padding:0 10px; display:none; transition:0.2s ease-in-out">
+            <span class="title-alert" id="title-alert"><img src="~/Image/failed-mark.png" style="width:5%" />Tài khoản hoặc mật khẩu không hợp lệ</span>
+        </div>
+
+
+        <div class="input-login">
+
+            <input type="email" placeholder="Tên đăng nhập" id="email-login" name="email" autocomplete="off" required />
+        </div>
+
+        <div class="input-login">
+            <input type="password" placeholder="Mật khẩu" id="password-login" name="password" autocomplete="off" required />
+        </div>
+
+        <div class="login-button">
+            <div class="remember-password">
+                <div class="container">
+                    <label><input type="radio" name="e">Nhớ mật khẩu</label>
+                </div>
+            </div>
+
+
+            <div class="group-loading-login" style=" text-align: center; align-items: center;display:grid; ">
+                <div class="submit" id="btn-submit-login">
+                    <button type="submit" >Đăng nhập</button>
+                </div>
+                <div class="submit" id="btn-loading-login" style=" width: 60%; margin-left: 8%; padding: 10px; color: white; font-size: 16px; font-weight: bold; background-color: white; border-radius: 25px; display: none;">
+                    <a role="button"><img style="width:15%;" src="~/Image/loading.gif" /></a>
+                </div>
+            </div>
+
+            <div class="forgot-password">
+                <a href="#">Quên mật khẩu ?</a>
+            </div>
+        </div>
+
+
+        <div style="width:90%; height:8px; background-color:white; margin:20px 30px; border-radius: 10px;"></div>
+
+        <div class="login-other">
+            <div class="login-other-option" id="login-facebook">
+                <div class="img-other-option">
+                    <img src="~/Image/facebook.png" />
+                </div>
+                <div class="name-other-option">
+                    <span>FACEBOOK</span>
+                </div>
+            </div>
+
+            <div class="login-other-option" id="login-google">
+                <div class="img-other-option">
+                    <img src="~/Image/google-logo.png" />
+                </div>
+                <div class="name-other-option">
+                    <span>GOOGLE</span>
+
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="link-to-register">
+            <span>Chưa là thành viên, đăng ký <a href="#" onclick="showRegister()">Tại đây</a></span>
+        </div>
+    </form>
+        @*end form login input*@
+
+    </div>
+    @*finish popup login*@
+
+
+
+
+    @*register popup input*@
+    <div class="login-popup" id="register-popup">
+        <div class="title-login">
+            <span id="title-email-site">ĐĂNG KÝ TÀI KHOẢN MỚI</span>
+            <span id="title-otp-site" style="display:none">NHẬP MÃ XÁC MINH</span>
+            <span id="title-captcha-site" style="display:none">ĐẶT MẬT KHẨU</span>
+
+        </div>
+
+        @*form register input*@
+        <form id="register-form" action="~/Home/completeRegister" method="post">
+
+            <div class="alert alert-danger" id="failed-email-register" style="margin:10px 70px; height:40px; line-height:40px; padding:0 10px; display:none; transition:0.2s ease-in-out">
+                <span class="title-alert" id="title-alert"><img src="~/Image/failed-mark.png" style="width:5%" />Tài khoản này đã được sử dụng</span>
+            </div>
+
+
+
+            @*real input area*@
+
+            <input type="email" name="email" id="real-email-register" hidden readonly />
+            <input type="password" name="password" id="real-password-register" hidden readonly />
+
+            @*end real input area*@
+
+
+
+
+
+            @*input email site*@
+        <div class="input-email-site" id="input-email-site" style="display:block">
+            <div class="input-login">
+                <input type="email" placeholder="Tên đăng nhập" id="email-register" autocomplete="off" required />
+            </div>
+
+            <div class="login-warn">
+                <span>Bằng việc tiếp tục, bạn đồng ý với điều khoản sử dụng, Chính sách bảo mật quy chế, Chính sách của chúng tôi</span>
+            </div>
+
+
+            <div class="login-button" style="width: 100%; text-align: center; align-items: center;display:grid; ">
+                <div class="submit" id="btn-check-email" style="width: 30%; margin-left: 35%; padding: 20px; color: white; font-size: 16px; font-weight: bold; background-color: red; border-radius: 50px;">
+                    <a role="button"  onclick="checkEmail()">Tiếp tục</a>
+                </div>
+                <div class="submit" id="btn-loading-email" style="width: 30%; margin-left: 35%; padding: 10px; color: white; font-size: 16px; font-weight: bold; background-color: white; border-radius: 50px; display:none">
+                    <a role="button" ><img style="width:15%;" src="~/Image/loading.gif"/></a>
+                </div>
+            </div>
+        </div>
+
+            @*end input email site*@
+
+
+
+
+
+
+            @*input otp site*@
+
+        <div class="input-otp-site" id="input-otp-site" style="display:none">
+            @if (tempAccount != null)
+            {
+                <div class="title-info-receiver">
+                    <span id="mask-email"></span>
+                </div>
+
+                <div class="alert alert-danger" id="failed-otp-register" style="margin:10px 70px; height:40px; line-height:40px; padding:0 10px; display:none; transition:0.2s ease-in-out">
+                    <span class="title-alert" id="title-alert"><img src="~/Image/failed-mark.png" style="width:5%" />OTP không chính xác</span>
+                </div>
+
+                <div class="group-otp" id="otp-container">
+                    <div class="input-otp-one">
+                        <input id="number-otp" type="number" inputmode="numeric" maxlength="1" oninput="handleInput(this)" />
+                    </div>
+                    <div class="input-otp-one">
+                        <input id="number-otp" type="number" inputmode="numeric" maxlength="1" oninput="handleInput(this)" readonly />
+                    </div>
+                    <div class="input-otp-one">
+                        <input id="number-otp" type="number" inputmode="numeric" maxlength="1" oninput="handleInput(this)" readonly />
+                    </div>
+                    <div class="input-otp-one">
+                        <input id="number-otp" type="number" inputmode="numeric" maxlength="1" oninput="handleInput(this)" readonly />
+                    </div>
+                    <div class="input-otp-one">
+                        <input id="number-otp" type="number" inputmode="numeric" maxlength="1" oninput="handleInput(this)" readonly />
+                    </div>
+                    <div class="input-otp-one">
+                        <input id="number-otp" type="number" inputmode="numeric" maxlength="1" oninput="handleInput(this)" readonly />
+                    </div>
+                </div>
+
+                <div class="login-button" style="width: 100%; text-align: center; align-items: center; ">
+                    <div class="submit" id="btn-check-otp" style="width: 30%; margin-left: 35%; padding: 20px; color: white; font-size: 16px; font-weight: bold; background-color: red; border-radius: 50px;">
+                        <a role="button" onclick="checkOtp()">Xác minh</a>
+                    </div>
+
+                    <div class="submit" id="btn-loading-otp" style="width: 30%; margin-left: 35%; padding: 10px; color: white; font-size: 16px; font-weight: bold; background-color: white; border-radius: 50px; display:none">
+                        <a role="button"><img style="width:15%;" src="~/Image/loading.gif" /></a>
+                    </div>
+                </div>
+            }
+        </div>
+
+            @*end input otp site*@
+
+
+
+
+
+            @*captcha verified site*@
+        <div class="input-verified-site" id="input-verified-site" style="display:none">
+
+
+            <div class="alert alert-danger" id="failed-password-register" style="margin:10px 70px; height:40px; line-height:40px; padding:0 10px; display:none; transition:0.2s ease-in-out">
+                <span class="title-alert" id="title-alert"><img src="~/Image/failed-mark.png" style="width:5%" />Mật khẩu không khớp</span>
+            </div>
+
+            <div class="input-password-site">
+                <div class="input-password-field">
+                    <input type="password" id="new-password" placeholder="Đặt mật khẩu mới" />
+                </div>
+                <div class="input-password-field">
+                    <input type="password" id="repeat-password" placeholder="Nhập lại mật khẩu mới" />
+                </div>
+            </div>
+
+
+            <div class="input-captcha-site" id="input-captcha-site">
+                @Html.Captcha(6)
+            </div>
+
+
+            <div class="login-button" style="width: 100%; text-align: center; align-items: center; ">
+                <div class="submit" id="btn-complete-captcha" style="width: 30%; margin-left: 35%; padding: 20px; color: white; font-size: 16px; font-weight: bold; background-color: red; border-radius: 50px;">
+                    <a role="button" onclick="checkPassword()">Hoàn thành</a>
+                </div>
+                <div class="submit" id="btn-loading-captcha" style="width: 30%; margin-left: 35%; padding: 10px; color: white; font-size: 16px; font-weight: bold; background-color: white; border-radius: 50px; display:none">
+                    <a role="button"><img style="width:15%;" src="~/Image/loading.gif" /></a>
+                </div>
+            </div>
+        </div>
+            @*end captcha verified site*@
+
+
+
+
+
+            <div style="width:90%; height:8px; background-color:white; margin:20px 30px; border-radius: 10px;"></div>
+
+
+            <div class="login-other" id="login-other">
+                <div class="login-other-option" id="login-facebook">
+                    <div class="img-other-option">
+                        <img src="~/Image/facebook.png" />
+                    </div>
+                    <div class="name-other-option">
+                        <span>FACEBOOK</span>
+                    </div>
+                </div>
+
+                <div class="login-other-option" id="login-google">
+                    <div class="img-other-option">
+                        <img src="~/Image/google-logo.png" />
+                    </div>
+                    <div class="name-other-option">
+                        <span>GOOGLE</span>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="link-to-register">
+                <span>Bạn đã có tài khoản ? Đăng nhập <a href="#" onclick="showLogin()">Tại đây</a></span>
+            </div>
+        </form>
+        @*end form register input*@
+
+    </div>
+    @*end register popup input*@
+
+
+
+    @*header*@
+<div class="main-header">
+
+    @*logo*@
+    <div class="logo-side">
+        <a href="~/Home/HomePage">
+            <img src="~/Image/fulllogo.png" />
+        </a>
+    </div>
+    @*end logo*@
+
+
+    @*topic*@
+    <div class="topic-side">
+        <ul class="nav-topic">
+            <li class="topic-item">
+                <a href="#">Trang chủ</a>
+            </li>
+            <li class="topic-item">
+                <a href="#">Giới thiệu</a>
+            </li>
+            <li class="topic-item">
+                <a href="#">Trở thành đối tác nhà nhanh</a>
+            </li>
+            <li class="topic-item">
+                <a href="#">Trung tâm hỗ trợ  </a>
+                <i class="ti-angle-down"></i>
+            </li>
+        </ul>
+    </div>
+    @*end topic*@
+
+
+
+
+
+
+
+    @if (user != null)
+    {
+        @*profile user*@
+
+        <div class="profile-side" id="profile-side">
+            <div class="profile-button">
+                <div class="info">
+                    <div class="avatar-user"><img src=""/></div>
+                    <div class="name-email-user">
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div></div>
+                </div>
+                <div class="setting">
+                    <ul>
+                        <li><a href="#">Quản lý tài khoản</a></li>
+                        <li><a href="#">Quản lý tin đăng</a></li>
+                        <li><a href="~/Home/LogoutAccount">Đăng xuất</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="notification">
+                <img src="~/Image/noti-icon.png"/>
+            </div>
+
+            <div class="post-property-button">
+                <a role="button" onclick="postProperty()">Đăng tin</a>
+            </div>
+        </div>
+
+        @*end profile user*@
+
+    }
+    else
+    {
+
+        @*login / register*@
+        <div class="login-side" id="login-side">
+            <a id="login-item" class="btn-login" onclick="showLogin()">Đăng nhập</a>
+            <a id="login-item" class="btn-register" onclick="showRegister()">Đăng ký</a>
+        </div>
+        @*end login / register*@
+    }
+
+
+
+
+</div>
+    @*end header*@
+
+
+
+
+    @*content*@
+    <div class="main-content">
+        @RenderBody()
+    </div>
+    @*end content*@
+
+
+
+
+    @*footer*@
+    <div class="main-footer">
+
+        @*left side*@
+        <div class="left-side-footer">
+            <ul class="list-item">
+                <li>
+                    <img src="~/Image/fulllogo2.png" />
+                </li>
+                <li><span>Công ty ABC</span></li>
+                <li><span>Địa chỉ: Tòa nhà 45 tầng, Vinhomes Grand Park, Thủ Đức, Hồ Chí Minh</span></li>
+                <li><span>Mã số doanh Nghiệp: 123456789 do Sở Kế Hoạch và Đầu Tư Tp. Hồ Chí Minh cấp lần đầu ngày 28 tháng 10 năm 2023</span></li>
+                <li><span>Đại diện pháp luật: NGUYỄN NGỌC LỢI</span></li>
+            </ul>
+        </div>
+        @*end left side*@
+
+        @*right side*@
+        <div class="right-side-footer">
+            <div class="about-topic">
+                <span class="title-about">VỀ NHÀ NHANH</span>
+                <ul class="list-item-about">
+                    <li class="item-about">
+                        <a href="#">Câu chuyện</a>
+                    </li>
+                    <li class="item-about">
+                        <a href="#">Tin tức</a>
+                    </li>
+                    <li class="item-about">
+                        <a href="#">Hệ thống tổ chức</a>
+                    </li>
+                    <li class="item-about">
+                        <a href="#">Quan hệ đầu tư</a>
+                    </li>
+                    <li class="item-about">
+                        <a href="#">Trở thành đối tác</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="about-topic">
+                <span class="title-about">ĐỐI TÁC</span>
+                <ul class="list-item-about">
+                    <li class="item-about">
+                        <a href="#">Vệ sinh </a>
+                    </li>
+                    <li class="item-about">
+                        <a href="#">Lắp đặt máy móc</a>
+                    </li>
+                    <li class="item-about">
+                        <a href="#">Bảo hành</a>
+                    </li>
+                    <li class="item-about">
+                        <a href="#">Tạp hóa</a>
+                    </li>
+                    <li class="item-about">
+                        <a href="#">Bảo vệ</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="about-topic">
+                <span class="title-about">HƯỚNG DẪN</span>
+                <ul class="list-item-about">
+                    <li class="item-about">
+                        <a href="#">Cẩm nang thuê nhà</a>
+                    </li>
+                    <li class="item-about">
+                        <a href="#">Hướng dẫn sử dụng</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        @*end right side*@
+
+
+    </div>
+    @*end footer*@
+
+
+
+
+    <!-- REQUIRED SCRIPTS -->
+    <!-- jQuery -->
+    <script src="~/Content/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/Content/dist/js/adminlte.min.js"></script>
+
+    <script src="~/Content/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/validator@latest/validator.min.js"></script>
+
+
+
+    @*responsive*@
+    <script>
+        //restrict the size must be over 768
+        window.addEventListener('resize', function () {
+            if (window.innerWidth < 768) {
+                window.innerWidth = 768;
+            }
+        });
+    </script>
+    @*end responsive*@
+
+
+    @*show login/register popup*@
+
+
+    <script>
+        function showLogin() {
+            var popUpLogin = document.getElementById('login-popup');
+            var popUpRegister = document.getElementById('register-popup');
+            var allInputOfRegister = popUpRegister.getElementsByTagName("input");
+
+
+            //reset all input value
+            for (var i = 0; i < allInputOfRegister.length; i++) {
+                allInputOfRegister[i].value = ""; // 
+            }
+
+            var hideSide = document.getElementById('hide-side');
+
+            var inputEmail = document.getElementById('input-email-site');
+            var inputOtp = document.getElementById('input-otp-site');
+            var inputVerified = document.getElementById('input-verified-site');
+            inputEmail.style.display = "block";
+            inputOtp.style.display = "none";
+            inputVerified.style.display = "none";
+
+
+
+
+            hideSide.style.display = "block";
+            popUpLogin.classList.add("show-login-popup");
+            popUpRegister.classList.remove("show-register-popup");
+
+            // Thêm sự kiện click cho cả trang
+            document.addEventListener('click', function (event) {
+                // Kiểm tra xem người dùng đã click ra ngoài popUp hay không
+                if (hideSide.contains(event.target)) {
+                    // Nếu click ra ngoài, ẩn popUp và remove classlist
+                    hideSide.style.display = "none";
+                    popUpLogin.classList.remove("show-login-popup");
+                }
+            });
+        }
+
+        function showRegister() {
+            var popUpRegister = document.getElementById('register-popup');
+            var popUpLogin = document.getElementById('login-popup');
+            var hideSide = document.getElementById('hide-side');
+
+            var allInputOfLogin = popUpLogin.getElementsByTagName("input");
+
+            //reset all input value
+            for (var i = 0; i < allInputOfLogin.length; i++) {
+                allInputOfLogin[i].value = ""; // 
+            }
+
+            hideSide.style.display = "block";
+            popUpRegister.classList.add("show-register-popup");
+            popUpLogin.classList.remove("show-login-popup")
+
+            // Thêm sự kiện click cho cả trang
+            document.addEventListener('click', function (event) {
+                // Kiểm tra xem người dùng đã click ra ngoài popUp hay không
+                if (hideSide.contains(event.target)) {
+                    // Nếu click ra ngoài, ẩn popUp và remove classlist
+                    hideSide.style.display = "none";
+                    popUpRegister.classList.remove("show-register-popup");
+                }
+            });
+        }
+
+    </script>
+
+
+
+        @*keep focus input*@
+        <script>
+            $(document).ready(function () {
+                $(".input-login input").focus(function () {
+                    $(this).addClass("focus");
+                });
+
+                $(".input-login input").blur(function () {
+                    if ($(this).val() !== "") {
+                        $(this).addClass("focus");
+                    } else {
+                        $(this).removeClass("focus");
+                    }
+                });
+            });
+        </script>
+        @*keep focus input*@
+
+
+
+    @*end show login/register popup*@
+
+
+
+
+
+
+    @*check email valid*@
+    <script>
+        $(document).ready(function () {
+            $("#login-form").submit(function (event) {
+                // Ngăn chặn sự kiện mặc định của form
+                event.preventDefault();
+
+                // Lấy giá trị từ trường email
+                var email = $("#email-login").val();
+                var password = $("#password-login").val();
+                var alert = document.getElementById('failed-email');
+                
+                var btnSubmitLogin = document.getElementById('btn-submit-login');
+                var btnLoadingLogin = document.getElementById('btn-loading-login');
+
+
+                btnSubmitLogin.style.display = "none";
+                btnLoadingLogin.style.display = "block";
+                // Gọi action checkEmailValid thông qua AJAX
+                $.ajax({
+                    url: '/Home/checkAccountValid',
+                    type: 'GET',
+                    data: { email: email, password: password },
+                    success: function (data) {
+                        // Xử lý kết quả trả về từ action
+
+
+                        if (data.result) {
+                            console.log('dang nhap thanh cong');
+                            alert.style.display = "none";
+
+                            setTimeout(function () {
+                                btnSubmitLogin.style.display = "block";
+                                btnLoadingLogin.style.display = "none";
+
+                                $("#login-form")[0].submit();
+
+                            },3000);
+
+                        } else {
+                            console.log('dang nhap that bai')
+
+                            // Đặt thời gian chờ trước khi đặt lại display thành "none" sau 2 giây
+                            setTimeout(function () {
+                                alert.style.display = "block";
+                                btnSubmitLogin.style.display = "block";
+                                btnLoadingLogin.style.display = "none";
+                            }, 2000);
+
+                            setTimeout(function () {
+                                alert.style.display = "none";
+                            }, 4000);
+                        }
+                    },
+                    error: function (data) {
+                        // Xử lý lỗi nếu có
+                        console.log(data.error);
+                    }
+                });
+            });
+        });
+    </script>
+    @*end check email valid*@
+
+
+    @*check email valid on register*@
+    <script>
+        var currentOtp = "";
+
+        var btnCheckEmail = document.getElementById('btn-check-email');
+        var btnCheckOtp = document.getElementById('btn-check-otp');
+        var btnCompleteCaptcha = document.getElementById('btn-complete-captcha');
+        var btnLoadingEmail = document.getElementById('btn-loading-email');
+        var btnLoadingOtp = document.getElementById('btn-loading-otp');
+        var btnLoadingCaptcha = document.getElementById('btn-loading-captcha');
+
+
+        // Hàm để lấy giá trị OTP từ người dùng (chắc chắn rằng bạn đã cài đặt logic này phù hợp)
+        function getUserEnteredOTP() {
+            // Lấy giá trị OTP từ ô nhập của người dùng
+            var otpValues = Array.from(document.querySelectorAll('.input-otp-one input')).map(input => input.value);
+            return otpValues.join(''); // Kết hợp các giá trị thành một chuỗi
+        }
+
+
+        //check email register
+
+        function checkEmail() {
+            //change the button to loading about 2 seconds
+
+            btnLoadingEmail.style.display = "block";
+            btnCheckEmail.style.display = "none"
+
+            // Đặt thời gian chờ trước khi đặt lại display thành "none" sau 2 giây
+            setTimeout(function () {
+                btnLoadingEmail.style.display = "none";
+                btnCheckEmail.style.display = "block"
+
+
+            // Lấy giá trị từ trường email
+            var email = $("#email-register").val();
+            var alert = document.getElementById('failed-email-register');
+
+
+            // Gọi action checkEmailValid thông qua AJAX
+            $.ajax({
+                url: '/Home/checkEmailValid',
+                type: 'GET',
+                data: { email: email },
+                success: function (data) {
+                    // Xử lý kết quả trả về từ action
+                    console.log(email);
+                    if (data.result) {
+                        console.log('email hop le');
+                        var realEmailRegister = document.getElementById('real-email-register');
+                        realEmailRegister.value = email;
+                        alert.style.display = "none";
+
+
+                        $.ajax({
+                            url: 'Home/sendConfirmCodeToEmail',
+                            type: 'GET',
+                            data: { receivedEmail: email },
+                            success: function (data) {
+
+                                //get otp from session
+                                currentOtp = data.otp;
+
+                                if (data.result) {
+                                    console.log(data.result);
+                                    console.log(data.otp)
+                                    console.log("da gui email");
+
+
+                                    //hiển thị form nhập otp
+
+                                    var emailSite = document.getElementById('input-email-site');
+                                    var titleEmailSite = document.getElementById('title-email-site');
+                                    var otpSite = document.getElementById('input-otp-site');
+                                    var titleOtpSite = document.getElementById('title-otp-site');
+
+
+                                    emailSite.style.display = "none";
+                                    titleEmailSite.style.display = "none";
+
+                                    otpSite.style.display = "block";
+                                    titleOtpSite.style.display = "block";
+
+
+                                    //end hiển thị form nhập otp
+
+                                    var maskedEmailSpan = document.getElementById("mask-email");
+                                    maskedEmailSpan.textContent = "Chúng tôi đã gửi mã xác minh gồm 6 chữ số tới " + data.email;
+
+                                } else {
+                                    console.log(data.result);
+                                    console.log("chua gui duoc email")
+
+                                }
+                            },
+                            error: function (data) {
+                                // Xử lý lỗi nếu có
+                                console.log(data.error);
+                            }
+                        });
+
+
+                        //$("#register-form")[0].submit();
+                    } else {
+                        console.log('email da ton tai ')
+                        alert.style.display = "block";
+
+                        // Đặt thời gian chờ trước khi đặt lại display thành "none" sau 2 giây
+                        setTimeout(function () {
+                            alert.style.display = "none";
+                        }, 2000);
+                    }
+                },
+                error: function (data) {
+                    // Xử lý lỗi nếu có
+                    console.log(data.error);
+                }
+            });
+
+
+            }, 5000);
+        }
+
+        //end check email register
+
+
+
+        //check otp 
+
+        var otpInputs = document.querySelectorAll('.input-otp-one input');
+
+        otpInputs.forEach(function (input, index) {
+            input.addEventListener('input', function () {
+                // Kiểm tra xem input hiện tại có phải là input cuối cùng hay không
+                btnLoadingOtp.style.display = "block";
+                btnCheckOtp.style.display = "none";
+                if (index === otpInputs.length - 1) {
+                    // Thực hiện các hành động khi nhập đến input cuối cùng
+
+                        btnLoadingOtp.style.display = "none";
+                        btnCheckOtp.style.display = "block";
+
+                    var userEnteredOTP = getUserEnteredOTP();
+                    console.log('otp user: ' + userEnteredOTP);
+
+                    var otpFromSession = currentOtp;
+                    console.log('otp session: ' + otpFromSession);
+
+                    // So sánh giá trị nhập từ người dùng với giá trị OTP từ server
+                    if (userEnteredOTP === otpFromSession) {
+                        console.log("OTP hợp lệ");
+                        // Thực hiện các hành động khi OTP hợp lệ
+                        var titleOtpSite = document.getElementById('title-otp-site');
+                        titleOtpSite.style.display = "none";
+
+                        var titleCaptchaSite = document.getElementById('title-captcha-site');
+                        var inputVerifiedSite = document.getElementById('input-verified-site');
+                        var loginOther = document.getElementById('login-other');
+                        var otpSite = document.getElementById('input-otp-site');
+
+                        titleCaptchaSite.style.display = "block";
+                        inputVerifiedSite.style.display = "block";
+                        otpSite.style.display = "none";
+                        loginOther.style.display = "none";
+                    } else {
+                        console.log("OTP không hợp lệ");
+                        var failedOtpRegister = document.getElementById('failed-otp-register');
+                        failedOtpRegister.style.display = "block"
+
+                        // Thực hiện các hành động khi OTP không hợp lệ
+                        setTimeout(function () {
+                            failedOtpRegister.style.display = "none"
+                        },2000);
+                    }
+                }
+            });
+        });
+
+        //end check otp
+
+
+        //check password
+        function checkPassword() {
+            btnCompleteCaptcha.style.display = "none";
+            btnLoadingCaptcha.style.display = "block";
+
+
+            setTimeout(function () {
+
+                btnCompleteCaptcha.style.display = "block";
+                btnLoadingCaptcha.style.display = "none";
+
+                var newPassword = document.getElementById('new-password');
+                var repeatPassword = document.getElementById('repeat-password');
+
+
+                if (newPassword.value === repeatPassword.value) {
+                    console.log('mat khau hop le');
+                    var realPassRegister = document.getElementById('real-password-register');
+                    realPassRegister.value = newPassword.value;
+
+                    $("#register-form").submit();
+
+                } else {
+                    console.log('mat khau khong hop le');
+                    var failPassword = document.getElementById('failed-password-register');
+
+                    failPassword.style.display = "block";
+
+                    setTimeout(function () {
+                        failPassword.style.display = "none"
+                    }, 2000);
+
+                }
+            },3000);
+                
+        }
+        //end check password
+
+    </script>
+    @*end check email valid on register*@
+
+
+
+
+    @* handle check otp*@
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var otpInputs = document.querySelectorAll('.input-otp-one input');
+
+            // Bắt sự kiện khi người dùng click vào ô OTP
+            otpInputs.forEach(function (input, index) {
+                if (index !== 0) {
+                    this.readOnly = true;
+                    input.classList.add("disabled-input-otp");
+                } else {
+                    input.addEventListener('click', function () {
+                        handleInput(this, index);
+
+                    });
+                }
+
+            });
+
+            // Bắt sự kiện khi ấn nút delete
+            document.getElementById("otp-container").addEventListener("keydown", function (event) {
+                if (event.key === "Backspace" || event.key === "Delete") {
+                    handleBackspace();
+                }
+            });
+        });
+
+        function handleInput(input, index) {
+
+            var otpInputs = document.querySelectorAll('.input-otp-one input');
+
+
+
+            // Kiểm tra xem giá trị nhập vào có phải là số hay không
+            if (!/^\d$/.test(input.value)) {
+                input.value = "";
+                return;
+            } else {
+                // Tìm input kế tiếp trong group-otp
+                var nextInputContainer = input.parentElement.nextElementSibling;
+
+                // Kiểm tra xem có phải là ô cuối hay không
+                if (nextInputContainer) {
+                    var nextInput = nextInputContainer.querySelector("input");
+
+                    // Nếu có input kế tiếp, focus vào nó và readonly cho ô hiện tại
+                    if (nextInput && nextInput.value === "") {
+                        nextInput.removeAttribute('readonly');
+                        nextInput.classList.remove("disabled-input-otp");
+                        nextInput.focus();
+                        input.readOnly = true;
+                        input.classList.add("disabled-input-otp");
+                    }
+                }
+            }
+
+
+        }
+
+        function handleBackspace() {
+            var currentInput = document.activeElement;
+
+            // Kiểm tra xem có phải là ô đầu tiên không
+            if (currentInput === document.querySelector('.input-otp-one input')) {
+                // Nếu là ô đầu tiên, xóa giá trị và giữ focus ở ô đầu tiên
+                currentInput.value = "";
+                currentInput.readOnly = false;
+                currentInput.focus();
+            } else {
+                var parentContainer = currentInput.parentElement;
+                var prevInputContainer = parentContainer.previousElementSibling;
+
+                // Kiểm tra xem có phải là ô đầu tiên không
+                if (prevInputContainer) {
+                    var prevInput = prevInputContainer.querySelector("input");
+
+                    // Nếu input đang focus có giá trị, xóa giá trị và chuyển focus
+                    if (currentInput.value !== "") {
+                        currentInput.value = "";
+                        prevInput.focus();
+                        prevInput.readOnly = false;
+                        currentInput.classList.add("disabled-input-otp");
+                        currentInput.readOnly = true;
+                        prevInput.classList.remove("disabled-input-otp");
+                    } else {
+                        // Nếu input đang focus không có giá trị, focus input phía trước và xóa giá trị của nó
+                        currentInput.value = "";
+                        prevInput.focus();
+                        prevInput.readOnly = false;
+                        currentInput.classList.add("disabled-input-otp");
+                        currentInput.readOnly = true;
+                        prevInput.classList.remove("disabled-input-otp");
+                    }
+                }
+            }
+        }
+    </script>
+    @*end handle check otp*@
+
+    <script>
+        $("#CaptchaInputText").attr("placeholder", "Nhập mã xác nhận");
+        $("#input-captcha-site").contents().filter(function () {
+            return (this.nodeType === 3 && this.parentNode.tagName.toLowerCase() !== "a"); // Lọc ra text nodes và kiểm tra id
+        }).each(function () {
+            this.nodeValue = ""; // Đặt giá trị của text node thành chuỗi trống
+        });
+    </script>
+
+    @*end check otp*@
+
+
+</body>
+</html>

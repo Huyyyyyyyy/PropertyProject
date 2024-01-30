@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "HomePage";
+    Layout = "~/Views/Shared/UserLayout.cshtml";
+
+    // Kiểm tra xem giá trị có tồn tại và không rỗng
+    string status = Session["status"] as string;
+
+    if (!string.IsNullOrEmpty(status))
+    {
+        <script>
+        var messageFromServer = '@Html.Raw(Json.Encode(status))';
+            alert(messageFromServer);
+        </script>
+
+        Session.Remove("status");
+    }
+}
+
+@*css*@
+<style>
+    /*css banner side*/
+    .banner-side {
+        width: 100%;
+        height: fit-content;
+    }
+
+        .banner-side img {
+            width: 100%;
+        }
+    /*finish css banner side*/
+</style>
+@*end css*@
+
+
+@*banner side*@
+
+<div class="banner-side">
+    <img src="~/Image/banner2.jpg" />
+</div>
+
+@*end banner side*@

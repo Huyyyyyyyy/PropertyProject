@@ -1,0 +1,605 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="PropertyProjectModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="email" />
+          </Key>
+          <Property Name="email" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="password" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="role" Type="varchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Admin">
+          <Key>
+            <PropertyRef Name="idAd" />
+          </Key>
+          <Property Name="idAd" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="emailAd" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="nameAd" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="PhoneAd" Type="varchar" MaxLength="11" Nullable="false" />
+          <Property Name="avatarAd" Type="varchar" MaxLength="100" />
+          <Property Name="genderAd" Type="nvarchar" MaxLength="5" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="idCustomer" />
+          </Key>
+          <Property Name="idCustomer" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="emailCus" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="introduceCode" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="phoneCus" Type="varchar" MaxLength="11" />
+          <Property Name="birthCus" Type="date" />
+          <Property Name="locationCus" Type="nvarchar" MaxLength="50" />
+          <Property Name="availableProperty" Type="int" Nullable="false" />
+          <Property Name="expiredProperty" Type="int" Nullable="false" />
+          <Property Name="pendingProperty" Type="int" Nullable="false" />
+          <Property Name="balance" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="avatarCus" Type="varchar" MaxLength="100" />
+          <Property Name="nameCus" Type="nvarchar" MaxLength="50" />
+          <Property Name="genderCus" Type="nvarchar" MaxLength="5" />
+        </EntityType>
+        <EntityType Name="ExtraFees">
+          <Key>
+            <PropertyRef Name="idTypeFee" />
+          </Key>
+          <Property Name="idTypeFee" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="costFee" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Feedback">
+          <Key>
+            <PropertyRef Name="idCustomerFeedback" />
+          </Key>
+          <Property Name="idCustomerFeedback" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="idOwner" Type="varchar" MaxLength="10" />
+          <Property Name="document" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="quality" Type="int" />
+        </EntityType>
+        <EntityType Name="ImageProperty">
+          <Key>
+            <PropertyRef Name="imageLink" />
+            <PropertyRef Name="idPost" />
+          </Key>
+          <Property Name="imageLink" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="idPost" Type="varchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LegalDocument">
+          <Key>
+            <PropertyRef Name="idPost" />
+            <PropertyRef Name="imageLegalDoc" />
+          </Key>
+          <Property Name="idPost" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="imageLegalDoc" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PropertyPost">
+          <Key>
+            <PropertyRef Name="idPost" />
+          </Key>
+          <Property Name="idPost" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="idCus" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="propType" Type="varchar" MaxLength="5" Nullable="false" />
+          <Property Name="propAddress" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="city" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="district" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="wards" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="street" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="title" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="nearby" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="acreage" Type="int" Nullable="false" />
+          <Property Name="price" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="interior" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="statusPost" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="regulationTime" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="bedRoom" Type="int" Nullable="false" />
+          <Property Name="toilet" Type="int" Nullable="false" />
+          <Property Name="animals" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PropertyType">
+          <Key>
+            <PropertyRef Name="idType" />
+          </Key>
+          <Property Name="idType" Type="varchar" MaxLength="5" Nullable="false" />
+          <Property Name="nameType" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_AD_AC">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="Admin" Type="Self.Admin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="Admin">
+              <PropertyRef Name="emailAd" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_C_AC">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="emailCus" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FB_C">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+          <End Role="Feedback" Type="Self.Feedback" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="idCustomer" />
+            </Principal>
+            <Dependent Role="Feedback">
+              <PropertyRef Name="idCustomerFeedback" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IP_PP">
+          <End Role="PropertyPost" Type="Self.PropertyPost" Multiplicity="1" />
+          <End Role="ImageProperty" Type="Self.ImageProperty" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PropertyPost">
+              <PropertyRef Name="idPost" />
+            </Principal>
+            <Dependent Role="ImageProperty">
+              <PropertyRef Name="idPost" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_KC_O">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="Feedback" Type="Self.Feedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="idCustomer" />
+            </Principal>
+            <Dependent Role="Feedback">
+              <PropertyRef Name="idOwner" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LD_PP">
+          <End Role="PropertyPost" Type="Self.PropertyPost" Multiplicity="1" />
+          <End Role="LegalDocument" Type="Self.LegalDocument" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PropertyPost">
+              <PropertyRef Name="idPost" />
+            </Principal>
+            <Dependent Role="LegalDocument">
+              <PropertyRef Name="idPost" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PP_C">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+          <End Role="PropertyPost" Type="Self.PropertyPost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="idCustomer" />
+            </Principal>
+            <Dependent Role="PropertyPost">
+              <PropertyRef Name="idCus" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PropertyProjectModelStoreContainer">
+          <EntitySet Name="Account" EntityType="Self.Account" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Admin" EntityType="Self.Admin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExtraFees" EntityType="Self.ExtraFees" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Feedback" EntityType="Self.Feedback" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ImageProperty" EntityType="Self.ImageProperty" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LegalDocument" EntityType="Self.LegalDocument" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PropertyPost" EntityType="Self.PropertyPost" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PropertyType" EntityType="Self.PropertyType" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_AD_AC" Association="Self.FK_AD_AC">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="Admin" EntitySet="Admin" />
+          </AssociationSet>
+          <AssociationSet Name="FK_C_AC" Association="Self.FK_C_AC">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="Customer" EntitySet="Customer" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FB_C" Association="Self.FK_FB_C">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="Feedback" EntitySet="Feedback" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IP_PP" Association="Self.FK_IP_PP">
+            <End Role="PropertyPost" EntitySet="PropertyPost" />
+            <End Role="ImageProperty" EntitySet="ImageProperty" />
+          </AssociationSet>
+          <AssociationSet Name="FK_KC_O" Association="Self.FK_KC_O">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="Feedback" EntitySet="Feedback" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LD_PP" Association="Self.FK_LD_PP">
+            <End Role="PropertyPost" EntitySet="PropertyPost" />
+            <End Role="LegalDocument" EntitySet="LegalDocument" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PP_C" Association="Self.FK_PP_C">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="PropertyPost" EntitySet="PropertyPost" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PropertyProjectModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="email" />
+          </Key>
+          <Property Name="email" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="role" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Admins" Relationship="Self.FK_AD_AC" FromRole="Account" ToRole="Admin" />
+          <NavigationProperty Name="Customers" Relationship="Self.FK_C_AC" FromRole="Account" ToRole="Customer" />
+        </EntityType>
+        <EntityType Name="Admin">
+          <Key>
+            <PropertyRef Name="idAd" />
+          </Key>
+          <Property Name="idAd" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="emailAd" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="nameAd" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PhoneAd" Type="String" MaxLength="11" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="avatarAd" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Account" Relationship="Self.FK_AD_AC" FromRole="Admin" ToRole="Account" />
+          <Property Name="genderAd" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="idCustomer" />
+          </Key>
+          <Property Name="idCustomer" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="emailCus" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="introduceCode" Type="String" MaxLength="9" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="phoneCus" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="birthCus" Type="DateTime" Precision="0" />
+          <Property Name="locationCus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="availableProperty" Type="Int32" Nullable="false" />
+          <Property Name="expiredProperty" Type="Int32" Nullable="false" />
+          <Property Name="pendingProperty" Type="Int32" Nullable="false" />
+          <Property Name="balance" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="avatarCus" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Account" Relationship="Self.FK_C_AC" FromRole="Customer" ToRole="Account" />
+          <NavigationProperty Name="Feedback" Relationship="Self.FK_FB_C" FromRole="Customer" ToRole="Feedback" />
+          <NavigationProperty Name="Feedbacks" Relationship="Self.FK_KC_O" FromRole="Customer" ToRole="Feedback" />
+          <NavigationProperty Name="PropertyPosts" Relationship="Self.FK_PP_C" FromRole="Customer" ToRole="PropertyPost" />
+          <Property Name="nameCus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="genderCus" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="ExtraFee">
+          <Key>
+            <PropertyRef Name="idTypeFee" />
+          </Key>
+          <Property Name="idTypeFee" Type="String" MaxLength="4" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="costFee" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Feedback">
+          <Key>
+            <PropertyRef Name="idCustomerFeedback" />
+          </Key>
+          <Property Name="idCustomerFeedback" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="idOwner" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="document" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="quality" Type="Int32" />
+          <NavigationProperty Name="Customer" Relationship="Self.FK_FB_C" FromRole="Feedback" ToRole="Customer" />
+          <NavigationProperty Name="Customer1" Relationship="Self.FK_KC_O" FromRole="Feedback" ToRole="Customer" />
+        </EntityType>
+        <EntityType Name="ImageProperty">
+          <Key>
+            <PropertyRef Name="imageLink" />
+            <PropertyRef Name="idPost" />
+          </Key>
+          <Property Name="imageLink" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="idPost" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="PropertyPost" Relationship="Self.FK_IP_PP" FromRole="ImageProperty" ToRole="PropertyPost" />
+        </EntityType>
+        <EntityType Name="LegalDocument">
+          <Key>
+            <PropertyRef Name="idPost" />
+            <PropertyRef Name="imageLegalDoc" />
+          </Key>
+          <Property Name="idPost" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="imageLegalDoc" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="PropertyPost" Relationship="Self.FK_LD_PP" FromRole="LegalDocument" ToRole="PropertyPost" />
+        </EntityType>
+        <EntityType Name="PropertyPost">
+          <Key>
+            <PropertyRef Name="idPost" />
+          </Key>
+          <Property Name="idPost" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="idCus" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="propType" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="propAddress" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="city" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="district" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="wards" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="street" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="title" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="nearby" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="acreage" Type="Int32" Nullable="false" />
+          <Property Name="price" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="interior" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="statusPost" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="regulationTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="bedRoom" Type="Int32" Nullable="false" />
+          <Property Name="toilet" Type="Int32" Nullable="false" />
+          <Property Name="animals" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Customer" Relationship="Self.FK_PP_C" FromRole="PropertyPost" ToRole="Customer" />
+          <NavigationProperty Name="ImageProperties" Relationship="Self.FK_IP_PP" FromRole="PropertyPost" ToRole="ImageProperty" />
+          <NavigationProperty Name="LegalDocuments" Relationship="Self.FK_LD_PP" FromRole="PropertyPost" ToRole="LegalDocument" />
+        </EntityType>
+        <EntityType Name="PropertyType">
+          <Key>
+            <PropertyRef Name="idType" />
+          </Key>
+          <Property Name="idType" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="nameType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_AD_AC">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="Admin" Type="Self.Admin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="Admin">
+              <PropertyRef Name="emailAd" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_C_AC">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="Customer" Type="Self.Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="email" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="emailCus" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FB_C">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+          <End Role="Feedback" Type="Self.Feedback" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="idCustomer" />
+            </Principal>
+            <Dependent Role="Feedback">
+              <PropertyRef Name="idCustomerFeedback" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_KC_O">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="Feedback" Type="Self.Feedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="idCustomer" />
+            </Principal>
+            <Dependent Role="Feedback">
+              <PropertyRef Name="idOwner" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PP_C">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+          <End Role="PropertyPost" Type="Self.PropertyPost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="idCustomer" />
+            </Principal>
+            <Dependent Role="PropertyPost">
+              <PropertyRef Name="idCus" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_IP_PP">
+          <End Role="PropertyPost" Type="Self.PropertyPost" Multiplicity="1" />
+          <End Role="ImageProperty" Type="Self.ImageProperty" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PropertyPost">
+              <PropertyRef Name="idPost" />
+            </Principal>
+            <Dependent Role="ImageProperty">
+              <PropertyRef Name="idPost" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LD_PP">
+          <End Role="PropertyPost" Type="Self.PropertyPost" Multiplicity="1" />
+          <End Role="LegalDocument" Type="Self.LegalDocument" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PropertyPost">
+              <PropertyRef Name="idPost" />
+            </Principal>
+            <Dependent Role="LegalDocument">
+              <PropertyRef Name="idPost" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PropertyProjectEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Accounts" EntityType="Self.Account" />
+          <EntitySet Name="Admins" EntityType="Self.Admin" />
+          <EntitySet Name="Customers" EntityType="Self.Customer" />
+          <EntitySet Name="ExtraFees" EntityType="Self.ExtraFee" />
+          <EntitySet Name="Feedbacks" EntityType="Self.Feedback" />
+          <EntitySet Name="ImageProperties" EntityType="Self.ImageProperty" />
+          <EntitySet Name="LegalDocuments" EntityType="Self.LegalDocument" />
+          <EntitySet Name="PropertyPosts" EntityType="Self.PropertyPost" />
+          <EntitySet Name="PropertyTypes" EntityType="Self.PropertyType" />
+          <AssociationSet Name="FK_AD_AC" Association="Self.FK_AD_AC">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="Admin" EntitySet="Admins" />
+          </AssociationSet>
+          <AssociationSet Name="FK_C_AC" Association="Self.FK_C_AC">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="Customer" EntitySet="Customers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FB_C" Association="Self.FK_FB_C">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="Feedback" EntitySet="Feedbacks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_KC_O" Association="Self.FK_KC_O">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="Feedback" EntitySet="Feedbacks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PP_C" Association="Self.FK_PP_C">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="PropertyPost" EntitySet="PropertyPosts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IP_PP" Association="Self.FK_IP_PP">
+            <End Role="PropertyPost" EntitySet="PropertyPosts" />
+            <End Role="ImageProperty" EntitySet="ImageProperties" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LD_PP" Association="Self.FK_LD_PP">
+            <End Role="PropertyPost" EntitySet="PropertyPosts" />
+            <End Role="LegalDocument" EntitySet="LegalDocuments" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="PropertyProjectModelStoreContainer" CdmEntityContainer="PropertyProjectEntities">
+          <EntitySetMapping Name="Accounts">
+            <EntityTypeMapping TypeName="PropertyProjectModel.Account">
+              <MappingFragment StoreEntitySet="Account">
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="role" ColumnName="role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Admins">
+            <EntityTypeMapping TypeName="PropertyProjectModel.Admin">
+              <MappingFragment StoreEntitySet="Admin">
+                <ScalarProperty Name="genderAd" ColumnName="genderAd" />
+                <ScalarProperty Name="idAd" ColumnName="idAd" />
+                <ScalarProperty Name="emailAd" ColumnName="emailAd" />
+                <ScalarProperty Name="nameAd" ColumnName="nameAd" />
+                <ScalarProperty Name="PhoneAd" ColumnName="PhoneAd" />
+                <ScalarProperty Name="avatarAd" ColumnName="avatarAd" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="PropertyProjectModel.Customer">
+              <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="genderCus" ColumnName="genderCus" />
+                <ScalarProperty Name="nameCus" ColumnName="nameCus" />
+                <ScalarProperty Name="idCustomer" ColumnName="idCustomer" />
+                <ScalarProperty Name="emailCus" ColumnName="emailCus" />
+                <ScalarProperty Name="introduceCode" ColumnName="introduceCode" />
+                <ScalarProperty Name="phoneCus" ColumnName="phoneCus" />
+                <ScalarProperty Name="birthCus" ColumnName="birthCus" />
+                <ScalarProperty Name="locationCus" ColumnName="locationCus" />
+                <ScalarProperty Name="availableProperty" ColumnName="availableProperty" />
+                <ScalarProperty Name="expiredProperty" ColumnName="expiredProperty" />
+                <ScalarProperty Name="pendingProperty" ColumnName="pendingProperty" />
+                <ScalarProperty Name="balance" ColumnName="balance" />
+                <ScalarProperty Name="avatarCus" ColumnName="avatarCus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExtraFees">
+            <EntityTypeMapping TypeName="PropertyProjectModel.ExtraFee">
+              <MappingFragment StoreEntitySet="ExtraFees">
+                <ScalarProperty Name="idTypeFee" ColumnName="idTypeFee" />
+                <ScalarProperty Name="costFee" ColumnName="costFee" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Feedbacks">
+            <EntityTypeMapping TypeName="PropertyProjectModel.Feedback">
+              <MappingFragment StoreEntitySet="Feedback">
+                <ScalarProperty Name="idCustomerFeedback" ColumnName="idCustomerFeedback" />
+                <ScalarProperty Name="idOwner" ColumnName="idOwner" />
+                <ScalarProperty Name="document" ColumnName="document" />
+                <ScalarProperty Name="quality" ColumnName="quality" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ImageProperties">
+            <EntityTypeMapping TypeName="PropertyProjectModel.ImageProperty">
+              <MappingFragment StoreEntitySet="ImageProperty">
+                <ScalarProperty Name="imageLink" ColumnName="imageLink" />
+                <ScalarProperty Name="idPost" ColumnName="idPost" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LegalDocuments">
+            <EntityTypeMapping TypeName="PropertyProjectModel.LegalDocument">
+              <MappingFragment StoreEntitySet="LegalDocument">
+                <ScalarProperty Name="idPost" ColumnName="idPost" />
+                <ScalarProperty Name="imageLegalDoc" ColumnName="imageLegalDoc" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PropertyPosts">
+            <EntityTypeMapping TypeName="PropertyProjectModel.PropertyPost">
+              <MappingFragment StoreEntitySet="PropertyPost">
+                <ScalarProperty Name="idPost" ColumnName="idPost" />
+                <ScalarProperty Name="idCus" ColumnName="idCus" />
+                <ScalarProperty Name="propType" ColumnName="propType" />
+                <ScalarProperty Name="propAddress" ColumnName="propAddress" />
+                <ScalarProperty Name="city" ColumnName="city" />
+                <ScalarProperty Name="district" ColumnName="district" />
+                <ScalarProperty Name="wards" ColumnName="wards" />
+                <ScalarProperty Name="street" ColumnName="street" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="nearby" ColumnName="nearby" />
+                <ScalarProperty Name="acreage" ColumnName="acreage" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="interior" ColumnName="interior" />
+                <ScalarProperty Name="statusPost" ColumnName="statusPost" />
+                <ScalarProperty Name="regulationTime" ColumnName="regulationTime" />
+                <ScalarProperty Name="bedRoom" ColumnName="bedRoom" />
+                <ScalarProperty Name="toilet" ColumnName="toilet" />
+                <ScalarProperty Name="animals" ColumnName="animals" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PropertyTypes">
+            <EntityTypeMapping TypeName="PropertyProjectModel.PropertyType">
+              <MappingFragment StoreEntitySet="PropertyType">
+                <ScalarProperty Name="idType" ColumnName="idType" />
+                <ScalarProperty Name="nameType" ColumnName="nameType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
